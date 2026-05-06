@@ -34,6 +34,10 @@ You are helping build and maintain `pykrairport`, a Python client that unifies K
 10. **Coordinates are WGS84 decimal degrees**:
    - expose `(latitude, longitude)` for human/geodesic use
    - expose `(longitude, latitude)` only through GeoJSON-specific helpers
+11. **Public response models use Pydantic v2**:
+   - inherit from `KrairportModel`
+   - keep `ConfigDict(frozen=True, extra="forbid")`
+   - serialize with `model_dump(mode="json")` / `model_dump_json()` or `to_dict()` / `to_json()`
 
 ## Initial supported endpoints
 
@@ -79,7 +83,7 @@ pykrairport/
 │   └── iiac.py            # IiacClient or adapter
 ├── airports.py            # bundled airport metadata and nearest lookup
 ├── geo.py                 # WGS84 Coordinate and lat/lon parsing
-├── models.py
+├── models.py              # Pydantic response models
 ├── enums.py
 ├── types.py               # public type aliases
 ├── exceptions.py
@@ -159,6 +163,9 @@ KAC and IIAC use different field names. Normalize them at the model boundary.
 
 ### Enums, types, coordinates
 
+- Keep public response models as Pydantic v2 `BaseModel` subclasses through `KrairportModel`.
+- Keep models immutable and reject unknown fields.
+- Do not use dataclass `asdict()` for public responses; use `model_dump(mode="json")`.
 - Keep `Provider`, `Direction`, `Airport`, `AirportType`, `ApiLanguage`, `ScheduleType` as `StrEnum`.
 - Keep public type aliases in `pykrairport.types`; wrappers should be able to import `AirportCodeLike`, `DirectionLike`, and `ProviderLike`.
 - Keep `Coordinate` as WGS84 decimal degrees.
@@ -336,6 +343,7 @@ Required offline tests:
 - passenger forecast integer conversion
 - result-code / HTTP error mapping
 - CLI JSON serialization
+- Pydantic model validation, frozen behavior, and JSON-ready dumps
 - raw endpoint path validation
 - enum string compatibility
 - WGS84 coordinate parsing/range validation
@@ -369,6 +377,7 @@ Optional live tests:
 14. Ignoring data.go.kr change notices before adding or documenting IIAC endpoints.
 15. Mixing GeoJSON `(lon, lat)` with human/geodesic `(lat, lon)`.
 16. Breaking string compatibility when adding enum types.
+17. Keeping dataclass serialization after switching public models to Pydantic.
 
 When one of these is fixed, update `docs/repeated-mistakes.md`.
 

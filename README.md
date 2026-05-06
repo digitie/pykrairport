@@ -2,7 +2,7 @@
 
 한국공항공사(KAC)와 인천국제공항공사(IIAC) OpenAPI를 하나의 Python 인터페이스로 묶기 위한 공항 데이터 라이브러리 설계 문서입니다.
 
-`pykrairport`는 "인천공항은 인천국제공항공사, 그 외 전국공항은 한국공항공사"라는 공급자 경계를 내부에서 흡수하고, 운항/주차/혼잡도/공항 메타데이터를 Python 타입과 dataclass 모델로 일관되게 제공하는 것을 목표로 합니다.
+`pykrairport`는 "인천공항은 인천국제공항공사, 그 외 전국공항은 한국공항공사"라는 공급자 경계를 내부에서 흡수하고, 운항/주차/혼잡도/공항 메타데이터를 Pydantic 기반 Python 타입 모델로 일관되게 제공하는 것을 목표로 합니다.
 
 > 현재 저장소는 `0.1.0` 초기 구현을 포함합니다. KAC/IIAC provider adapter, 통합 `KrairportClient`, KST 시간 파서, XML/JSON 정규화, CLI, fixture 기반 테스트가 들어 있으며, live API 테스트는 서비스키가 있을 때 별도 marker로 확장합니다.
 
@@ -16,7 +16,7 @@
 - **JSON/XML 차이 흡수**: KAC의 XML 중심 응답과 IIAC의 JSON/XML 응답을 내부에서 정규화합니다.
 - **KST datetime 표준화**: `YYYYMMDD`, `HHMM`, `YYYYMMDDHHMM`, 과학적 표기 숫자 문자열 등을 timezone-aware `datetime`이나 `int`/`str`로 변환합니다.
 - **공급자별 필드명 흡수**: `airport_code`, `schAirCode`, `airport`, `flight_id`, `f_id`, `schFID`처럼 기관마다 다른 필드명을 Pythonic 인터페이스로 통합합니다.
-- **타입 안전 모델**: `Flight`, `AircraftAssignment`, `ParkingFee`, `ArrivalCongestion`, `PassengerForecast` 같은 frozen dataclass와 public `StrEnum`/type alias를 제공합니다.
+- **Pydantic 모델**: `Flight`, `AircraftAssignment`, `ParkingFee`, `ArrivalCongestion`, `PassengerForecast` 같은 immutable `BaseModel`과 public `StrEnum`/type alias를 제공합니다.
 - **위경도 표준화**: 공항 좌표와 provider 좌표 필드를 WGS84 decimal degrees `Coordinate`로 정규화하고, GeoJSON용 `(longitude, latitude)` 변환을 제공합니다.
 - **공항 메타데이터 레지스트리**: `get_airport()`, `list_airports()`, `nearest_airport()`로 지도/검색/근접 공항 계산을 지원합니다.
 - **누락 API raw fallback**: 아직 typed 모델로 고정하지 않은 KAC/IIAC 공식 엔드포인트도 `kac_raw_items()` / `iiac_raw_items()`로 접근할 수 있습니다.
@@ -138,12 +138,10 @@ airport.flight_schedules(airport_code=Airport.ICN, direction=Direction.ARRIVAL)
 ### `Flight`
 
 ```python
-from dataclasses import dataclass
 from datetime import datetime
-from pykrairport import Direction, Provider
+from pykrairport import Direction, KrairportModel, Provider
 
-@dataclass(frozen=True, slots=True)
-class Flight:
+class Flight(KrairportModel):
     provider: Provider
     airport_code: str
     flight_id: str
@@ -166,8 +164,7 @@ class Flight:
 ### `AircraftAssignment`
 
 ```python
-@dataclass(frozen=True, slots=True)
-class AircraftAssignment:
+class AircraftAssignment(KrairportModel):
     airport_code: str
     flight_id: str
     flight_unique_id: str | None
@@ -183,8 +180,7 @@ class AircraftAssignment:
 ### `ParkingFee`
 
 ```python
-@dataclass(frozen=True, slots=True)
-class ParkingFee:
+class ParkingFee(KrairportModel):
     airport_code: str
     parking_name: str | None
     small_basic_minutes: int | None
@@ -199,8 +195,7 @@ class ParkingFee:
 ### `ArrivalCongestion`
 
 ```python
-@dataclass(frozen=True, slots=True)
-class ArrivalCongestion:
+class ArrivalCongestion(KrairportModel):
     terminal: str
     entry_gate: str
     flight_id: str | None
@@ -216,8 +211,7 @@ class ArrivalCongestion:
 ### `PassengerForecast`
 
 ```python
-@dataclass(frozen=True, slots=True)
-class PassengerForecast:
+class PassengerForecast(KrairportModel):
     display_date: str
     time_range: str
     t1_arrival_east: int | None
@@ -247,6 +241,8 @@ class PassengerForecast:
 | 위경도 | `Coordinate` | WGS84 decimal degrees, `(lat, lon)`과 GeoJSON `(lon, lat)` 모두 제공 |
 | 편명 `KE123`, `7C1101` | `str` | leading zero 가능성을 고려해 숫자형 변환 금지 |
 | 빈 문자열, 공백 | `None` | 공통 정규화 |
+
+모든 public 응답 모델은 Pydantic v2 `BaseModel` 기반입니다. 외부 앱에서는 `model_dump(mode="json")`, `model_dump_json()`, 또는 `to_dict()` / `to_json()`을 사용할 수 있습니다.
 
 ---
 
@@ -354,6 +350,7 @@ tests/
 ├── test_http.py
 ├── test_kac.py
 ├── test_iiac.py
+├── test_pydantic_models.py
 ├── test_routing.py
 ├── test_time.py
 └── test_xml.py

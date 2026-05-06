@@ -83,3 +83,9 @@
 - 증상: 기존 사용자의 `flight.provider == "kac"` 비교나 JSON 직렬화가 실패
 - 원인: 일반 `Enum`을 반환하거나 모델 필드를 enum-only로 급격히 바꿈
 - 가드레일: public enum은 모두 `StrEnum`으로 두고 기존 문자열 비교 테스트를 유지
+
+## 15. Pydantic 전환 후 dataclass 직렬화를 계속 쓰는 실수
+
+- 증상: CLI나 외부 앱에서 `asdict()`가 더 이상 응답 모델을 dict로 바꾸지 못함
+- 원인: public 응답 모델이 Pydantic `BaseModel`로 바뀌었는데 직렬화 경로를 갱신하지 않음
+- 가드레일: CLI와 문서 예시는 `model_dump(mode="json")`, `model_dump_json()`, `to_dict()`, `to_json()`을 사용

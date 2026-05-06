@@ -2,16 +2,33 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from pykrairport.enums import AirportType, Direction, Provider
 from pykrairport.geo import Coordinate
 from pykrairport.types import RawRecord
 
 
-@dataclass(frozen=True, slots=True)
-class Flight:
+class KrairportModel(BaseModel):
+    """Base class for public immutable response models."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    def to_dict(self) -> dict[str, Any]:
+        """Return a JSON-ready dictionary using Pydantic v2 serialization."""
+
+        return self.model_dump(mode="json")
+
+    def to_json(self) -> str:
+        """Return a JSON string using Pydantic v2 serialization."""
+
+        return self.model_dump_json()
+
+
+class Flight(KrairportModel):
     provider: Provider
     airport_code: str
     flight_id: str
@@ -28,11 +45,10 @@ class Flight:
     terminal: str | None
     gate: str | None
     codeshare: bool | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class AircraftAssignment:
+class AircraftAssignment(KrairportModel):
     airport_code: str
     flight_id: str
     flight_unique_id: str | None
@@ -42,11 +58,10 @@ class AircraftAssignment:
     scheduled_at: datetime | None
     estimated_at: datetime | None
     gate: str | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class ParkingFee:
+class ParkingFee(KrairportModel):
     airport_code: str
     parking_name: str | None
     small_basic_minutes: int | None
@@ -55,22 +70,20 @@ class ParkingFee:
     large_basic_fee: int | None
     small_daily_max_fee: int | None
     large_daily_max_fee: int | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class ParkingAreaStatus:
+class ParkingAreaStatus(KrairportModel):
     airport_code: str
     terminal: str | None
     parking_area: str
     occupied: int | None
     capacity: int | None
     updated_at: datetime | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class ArrivalCongestion:
+class ArrivalCongestion(KrairportModel):
     terminal: str
     entry_gate: str
     flight_id: str | None
@@ -80,11 +93,10 @@ class ArrivalCongestion:
     estimated_at: datetime | None
     korean_count: int | None
     foreign_count: int | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class PassengerForecast:
+class PassengerForecast(KrairportModel):
     display_date: str
     time_range: str
     t1_arrival_east: int | None
@@ -92,11 +104,10 @@ class PassengerForecast:
     t1_departure_total: int | None
     t2_arrival_total: int | None
     t2_departure_total: int | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class AirportCode:
+class AirportCode(KrairportModel):
     code: str
     korean_name: str | None
     english_name: str | None
@@ -106,11 +117,10 @@ class AirportCode:
     provider: Provider | None = None
     municipality: str | None = None
     coordinate: Coordinate | None = None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class FlightSchedule:
+class FlightSchedule(KrairportModel):
     provider: Provider
     direction: Direction
     flight_id: str
@@ -123,11 +133,10 @@ class FlightSchedule:
     end_date: str | None
     days: str | None
     season: str | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class AirportFacility:
+class AirportFacility(KrairportModel):
     provider: Provider
     airport_code: str | None
     terminal: str | None
@@ -138,11 +147,10 @@ class AirportFacility:
     business_hours: str | None
     telephone: str | None
     coordinate: Coordinate | None = None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class BusRoute:
+class BusRoute(KrairportModel):
     provider: Provider
     airport_code: str | None
     area: str | None
@@ -154,11 +162,10 @@ class BusRoute:
     route_info: str | None
     first_time_to_airport: str | None
     last_time_to_airport: str | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class TaxiStatus:
+class TaxiStatus(KrairportModel):
     provider: Provider
     airport_code: str | None
     terminal: str | None
@@ -170,11 +177,10 @@ class TaxiStatus:
     deluxe_count: int | None
     jumbo_count: int | None
     updated_at: datetime | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class WorldWeather:
+class WorldWeather(KrairportModel):
     direction: Direction
     flight_id: str | None
     airline_name: str | None
@@ -188,22 +194,20 @@ class WorldWeather:
     feels_like: float | None
     humidity: int | None
     wind_speed: float | None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class ServiceDestination:
+class ServiceDestination(KrairportModel):
     airport_code: str | None
     airport_name: str | None
     city_code: str | None
     city_name: str | None
     country_name: str | None
     coordinate: Coordinate | None = None
-    raw: RawRecord = field(default_factory=dict, repr=False)
+    raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
-@dataclass(frozen=True, slots=True)
-class AirportMetadata:
+class AirportMetadata(KrairportModel):
     code: str
     provider: Provider
     name_english: str

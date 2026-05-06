@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import math
 import re
-from dataclasses import dataclass
 from typing import Any, Literal
+
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from pykrairport.enums import CoordinateDatum
 from pykrairport.types import CoordinateTuple, GeoJsonPosition, RawRecord
@@ -15,26 +16,47 @@ _HEMISPHERE_SIGNS = {"N": 1, "E": 1, "S": -1, "W": -1}
 _HEMISPHERE_WORDS = {"NORTH": "N", "EAST": "E", "SOUTH": "S", "WEST": "W"}
 _HEMISPHERE_LETTER_RE = re.compile(r"(?<![A-Z])([NSEW])(?![A-Z])")
 _NUMBER_RE = re.compile(r"[+-]?\d+(?:\.\d+)?")
+_MISSING = object()
 
 
-@dataclass(frozen=True, slots=True)
-class Coordinate:
+class Coordinate(BaseModel):
     """WGS84 coordinate in decimal degrees.
 
     `latitude` and `longitude` are always decimal degrees. Use
     `as_geojson_position()` when a consumer expects `[longitude, latitude]`.
     """
 
+    model_config = ConfigDict(frozen=True)
+
     latitude: float
     longitude: float
     datum: CoordinateDatum = CoordinateDatum.WGS84
 
-    def __post_init__(self) -> None:
-        latitude = _validate_decimal_degrees(float(self.latitude), kind="latitude")
-        longitude = _validate_decimal_degrees(float(self.longitude), kind="longitude")
-        object.__setattr__(self, "latitude", latitude)
-        object.__setattr__(self, "longitude", longitude)
-        object.__setattr__(self, "datum", CoordinateDatum(str(self.datum)))
+    def __init__(
+        self,
+        latitude: Any = _MISSING,
+        longitude: Any = _MISSING,
+        **data: Any,
+    ) -> None:
+        if latitude is not _MISSING:
+            if "latitude" in data:
+                raise TypeError("latitude was provided both positionally and by keyword")
+            data["latitude"] = latitude
+        if longitude is not _MISSING:
+            if "longitude" in data:
+                raise TypeError("longitude was provided both positionally and by keyword")
+            data["longitude"] = longitude
+        super().__init__(**data)
+
+    @field_validator("latitude")
+    @classmethod
+    def _validate_latitude(cls, value: float) -> float:
+        return _validate_decimal_degrees(value, kind="latitude")
+
+    @field_validator("longitude")
+    @classmethod
+    def _validate_longitude(cls, value: float) -> float:
+        return _validate_decimal_degrees(value, kind="longitude")
 
     @classmethod
     def from_values(cls, latitude: Any, longitude: Any) -> Coordinate:

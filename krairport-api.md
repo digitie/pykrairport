@@ -222,11 +222,13 @@ client.iiac_raw_items("ShtbusInfo", "getShtbusInfo", {"pageNo": 1})
 
 모든 public 모델은:
 
-- `@dataclass(frozen=True, slots=True)`
+- Pydantic v2 `BaseModel` 기반의 `KrairportModel` 상속
+- `ConfigDict(frozen=True, extra="forbid")`
 - 공급자 원본 스키마를 그대로 흘리지 않음
 - 디버깅용 `raw: RawRecord`는 유지하되 기본값은 빈 mapping
 - provider/direction은 public 표면에서 `Provider`, `Direction` enum 사용
 - 좌표는 `Coordinate | None`으로 표준화
+- JSON 직렬화는 `model_dump(mode="json")`, `model_dump_json()`, `to_dict()`, `to_json()` 사용
 
 필수 모델:
 
@@ -240,6 +242,7 @@ PassengerForecast
 AirportCode
 AirportMetadata
 Coordinate
+KrairportModel
 ```
 
 ## 5. 타입 변환 규칙

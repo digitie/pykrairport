@@ -15,4 +15,5 @@
 - KAC/IIAC raw item access 추가
 - KAC 공식 서비스 목록과 IIAC 공공데이터포털 변경 공지를 반영한 API 커버리지 문서 추가
 - 외부 프로그램 연동용 `StrEnum`, type alias, WGS84 `Coordinate`, 공항 메타데이터 레지스트리 추가
-- fixture 기반 테스트 71개 추가, coverage fail-under 85 기준 통과
+- public 응답 모델을 Pydantic v2 `BaseModel` 기반 immutable 모델로 전환
+- fixture 기반 테스트 74개 추가, coverage fail-under 85 기준 통과

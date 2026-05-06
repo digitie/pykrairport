@@ -4,6 +4,44 @@
 
 `pykrairport`는 외부 프로그램에서 안정적으로 사용할 수 있도록 문자열 API를 유지하면서 `StrEnum`, 타입 alias, WGS84 좌표 모델을 함께 제공합니다.
 
+## Pydantic Models
+
+Public 응답 모델은 Pydantic v2 `BaseModel` 기반의 immutable 모델입니다. 문자열 입력은 `Provider`, `Direction`, `AirportType` 같은 `StrEnum`으로 검증되고, 출력은 Pydantic 표준 직렬화 API를 사용할 수 있습니다.
+
+```python
+from pykrairport import Flight
+
+flight = Flight(
+    provider="kac",
+    airport_code="GMP",
+    flight_id="KE1",
+    flight_unique_id=None,
+    direction="departure",
+    airline_name=None,
+    airline_code=None,
+    departure_airport_code=None,
+    arrival_airport_code=None,
+    scheduled_at=None,
+    estimated_at=None,
+    status_korean=None,
+    status_english=None,
+    terminal=None,
+    gate=None,
+    codeshare=None,
+)
+
+flight.provider == "kac"
+flight.model_dump(mode="json")
+flight.to_dict()
+```
+
+규칙:
+
+- 모델은 `ConfigDict(frozen=True, extra="forbid")`로 고정합니다.
+- `to_dict()`는 `model_dump(mode="json")`의 얇은 wrapper입니다.
+- `to_json()`은 `model_dump_json()`의 얇은 wrapper입니다.
+- 기존 문자열 비교 호환성을 위해 enum은 `StrEnum`을 유지합니다.
+
 ## Enum
 
 모든 enum은 `StrEnum`입니다. 기존처럼 문자열 비교와 JSON 직렬화가 가능하면서, IDE 자동완성과 타입 힌트를 얻을 수 있습니다.

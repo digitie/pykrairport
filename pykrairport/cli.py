@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import asdict, is_dataclass
 from datetime import date, datetime
-from typing import Any, cast
+from typing import Any
+
+from pydantic import BaseModel
 
 from pykrairport.client import KrairportClient
 
@@ -62,8 +63,8 @@ def _add_flight_args(parser: argparse.ArgumentParser) -> None:
 def _jsonable(value: Any) -> Any:
     if isinstance(value, list):
         return [_jsonable(item) for item in value]
-    if is_dataclass(value) and not isinstance(value, type):
-        return _jsonable(asdict(cast(Any, value)))
+    if isinstance(value, BaseModel):
+        return value.model_dump(mode="json")
     if isinstance(value, dict):
         return {key: _jsonable(item) for key, item in value.items()}
     if isinstance(value, (datetime, date)):
