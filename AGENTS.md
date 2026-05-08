@@ -34,6 +34,12 @@
 - Python 내부 문서도 한글로 작성합니다. 모듈 docstring, class/function docstring, 설명용 주석은 한글을 기본으로 하고, provider 원문/코드 식별자/URL만 원문을 유지합니다.
 - public API 변경 시 `README.md`, `krairport-api.md`, `SKILL.md`, 관련 `docs/` 문서를 함께 갱신합니다.
 
+## 로컬 작업 환경 규칙
+
+- 이 Windows 환경에서는 `rg` 실행 권한 문제가 반복될 수 있습니다. 막히면 권한 조정이나 재시도에 시간을 쓰지 말고 PowerShell `Get-ChildItem` / `Select-String` 조합으로 우회합니다.
+- 한글 문서를 PowerShell에서 읽거나 검색할 때는 `Get-Content -Encoding UTF8`, `Select-String -Encoding UTF8`처럼 인코딩을 명시합니다.
+- PowerShell 출력이 깨져 보여도 먼저 UTF-8 인코딩 누락을 의심합니다. 문서 자체가 깨졌다고 판단하기 전에 `-Encoding UTF8`로 다시 확인합니다.
+
 ## 문서 라우팅
 
 - `README.md`: 사용자용 개요, 설치, 예제, 모델 요약.

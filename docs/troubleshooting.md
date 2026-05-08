@@ -56,3 +56,13 @@ Windows 환경에서 `tzdata`가 설치되지 않았을 때 발생할 수 있습
 - IIAC `parking_status()`는 주차면/주차대수 현황 성격
 
 같은 "주차"라도 비교 가능한 값이 아닐 수 있습니다.
+
+## PowerShell에서 문서가 깨져 보임
+
+한글 문서가 깨져 보이면 파일 손상보다 PowerShell 인코딩 문제일 가능성이 큽니다.
+
+해결:
+
+- `Get-Content -Encoding UTF8`로 다시 읽음
+- `Select-String -Encoding UTF8`로 검색함
+- `rg`가 실행 권한 문제로 막히면 `Get-ChildItem -Recurse -File`과 `Select-String` 조합으로 우회함

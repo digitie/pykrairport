@@ -43,6 +43,9 @@ You are helping build and maintain `pykrairport`, a Python client that unifies K
 13. **Python 내부 문서는 한글**:
    - write module/class/function docstrings and explanatory comments in Korean
    - preserve provider text, code identifiers, commands, and URLs as-is
+14. **Windows 탐색은 PowerShell fallback 우선**:
+   - if `rg` is blocked by execution permissions, use `Get-ChildItem` and `Select-String`
+   - read/search Korean Markdown and Python docs with `-Encoding UTF8`
 
 ## Initial supported endpoints
 
@@ -385,6 +388,8 @@ Optional live tests:
 17. Keeping dataclass serialization after switching public models to Pydantic.
 18. Writing document file locations as local absolute paths.
 19. Reintroducing English Python docstrings or explanatory comments.
+20. Retrying blocked `rg` instead of using PowerShell file enumeration.
+21. Reading UTF-8 Korean docs through PowerShell without `-Encoding UTF8`.
 
 When one of these is fixed, update `docs/repeated-mistakes.md`.
 
@@ -398,3 +403,4 @@ When one of these is fixed, update `docs/repeated-mistakes.md`.
 - Update `CHANGELOG.md` for release-facing changes.
 - Write file locations in docs as project-root-relative paths.
 - Write Python docstrings and explanatory comments in Korean unless preserving provider text, code identifiers, commands, or URLs.
+- In this Windows workspace, use PowerShell fallback commands such as `Get-ChildItem -Recurse -File` and `Select-String -Encoding UTF8` when `rg` is blocked.

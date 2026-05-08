@@ -58,7 +58,7 @@
 
 - 증상: 운항/주차 API만 구현하고 통계/시설/교통/기상 API가 누락됨
 - 원인: KAC 서비스 목록과 IIAC B551177 데이터셋 목록을 별도로 대조하지 않음
-- 가드레일: [api-coverage.md](api-coverage.md)에 typed/raw 지원 상태를 기록하고, 미모델링 API는 `raw_items`로 접근 가능하게 유지
+- 가드레일: `docs/api-coverage.md`에 typed/raw 지원 상태를 기록하고, 미모델링 API는 `raw_items`로 접근 가능하게 유지
 
 ## 11. raw endpoint access를 너무 열어 두는 실수
 
@@ -70,7 +70,7 @@
 
 - 증상: 예전 IIAC service/operation 조합을 문서에 남겨 실제 호출이 실패
 - 원인: 공공데이터포털은 2026년에도 `FlightClosingInfoSpot`, `statusOfFltacdmmlstnAirTrafficPublic` 같은 변경 공지를 냈음
-- 가드레일: 새 IIAC API를 typed 모델로 승격하기 전 [api-coverage.md](api-coverage.md)와 공공데이터포털 변경 공지를 함께 확인
+- 가드레일: 새 IIAC API를 typed 모델로 승격하기 전 `docs/api-coverage.md`와 공공데이터포털 변경 공지를 함께 확인
 
 ## 13. 좌표 순서를 섞는 실수
 
@@ -101,3 +101,15 @@
 - 증상: 모듈 docstring, 함수 docstring, 설명용 주석이 문서 정책과 달라짐
 - 원인: 기존 예제나 외부 프로젝트에서 영어 docstring을 그대로 가져옴
 - 가드레일: Python 내부 문서는 한글로 작성하고, provider 원문/코드 식별자/URL만 원문 유지
+
+## 18. `rg` 권한 문제에 계속 시간을 쓰는 실수
+
+- 증상: Windows 환경에서 `rg`가 실행 권한 문제로 막혀 파일 검색이 지연됨
+- 원인: 같은 환경 제약을 매번 새 문제처럼 보고 `rg` 재시도나 권한 조정부터 시도함
+- 가드레일: 이 저장소 작업에서는 `Get-ChildItem -Recurse -File`과 `Select-String`으로 바로 우회
+
+## 19. PowerShell에서 UTF-8 문서를 깨진 것으로 오해하는 실수
+
+- 증상: 한글 Markdown이나 Python docstring이 PowerShell 출력에서 깨져 보여 불필요한 수정이 발생
+- 원인: PowerShell 기본 출력/입력 인코딩이 UTF-8 문서와 맞지 않음
+- 가드레일: 문서와 Python 파일을 읽거나 검색할 때 `Get-Content -Encoding UTF8`, `Select-String -Encoding UTF8`을 사용

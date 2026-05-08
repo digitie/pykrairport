@@ -370,6 +370,8 @@ tests/
 - 좌표는 사람/거리계산용 `(latitude, longitude)`와 GeoJSON용 `(longitude, latitude)` 순서가 다르므로 `Coordinate.as_tuple()`과 `Coordinate.as_geojson_position()`을 구분합니다.
 - 문서의 파일 위치 정보는 `pykrairport/client.py`처럼 프로젝트 기준 상대 경로로 작성합니다.
 - Python 내부 문서(module/class/function docstring과 설명용 주석)는 한글로 작성합니다. provider 원문, 코드 식별자, URL은 원문을 유지합니다.
+- Windows 작업 환경에서 `rg`가 권한 문제로 막히면 PowerShell `Get-ChildItem` / `Select-String`으로 우회합니다.
+- PowerShell에서 한글 문서를 읽거나 검색할 때는 `Get-Content -Encoding UTF8`, `Select-String -Encoding UTF8`처럼 인코딩을 명시합니다.
 - 문서상 `serviceURL`과 실제 요청 함수명이 분리되므로 base URL + operation 경로를 함께 관리해야 합니다.
 - Windows/Python 환경에는 IANA timezone database가 없을 수 있으므로 `tzdata` 의존성을 포함합니다. 설치 전 실행 환경에서도 `Asia/Seoul` 고정 UTC+9 fallback을 사용합니다.
 
