@@ -1,5 +1,7 @@
 """한국 공항 공공 API Python 클라이언트."""
 
+from pykrtour import PlaceCoordinate
+
 from pykrairport.airports import (
     AIRPORTS,
     IIAC_AIRPORTS,
@@ -29,12 +31,6 @@ from pykrairport.exceptions import (
     KrairportRequestError,
     KrairportServerError,
     UnsupportedAirportError,
-)
-from pykrairport.geo import (
-    Coordinate,
-    coordinate_from_mapping,
-    to_decimal_degrees,
-    to_decimal_degrees_or_none,
 )
 from pykrairport.models import (
     AircraftAssignment,
@@ -80,7 +76,6 @@ __all__ = [
     "ApiLanguage",
     "ArrivalCongestion",
     "BusRoute",
-    "Coordinate",
     "CoordinateDatum",
     "CoordinateTuple",
     "Direction",
@@ -103,6 +98,7 @@ __all__ = [
     "ParkingAreaStatus",
     "ParkingFee",
     "PassengerForecast",
+    "PlaceCoordinate",
     "Provider",
     "ProviderCode",
     "ProviderLike",
@@ -114,11 +110,8 @@ __all__ = [
     "UnsupportedAirportError",
     "WorldWeather",
     "__version__",
-    "coordinate_from_mapping",
     "get_airport",
     "get_airport_or_none",
     "list_airports",
     "nearest_airport",
-    "to_decimal_degrees",
-    "to_decimal_degrees_or_none",
 ]

@@ -191,8 +191,7 @@ def airports(
 
 def nearest_airport(
     self,
-    latitude: object,
-    longitude: object,
+    coordinate: PlaceCoordinate,
     *,
     provider: ProviderLike | None = None,
     active: bool | None = True,
@@ -202,8 +201,9 @@ def nearest_airport(
 정책:
 
 - 번들 좌표는 WGS84 decimal degrees를 표준으로 둡니다.
-- `Coordinate.as_tuple()`은 `(latitude, longitude)`입니다.
-- `Coordinate.as_geojson_position()`은 GeoJSON 표준인 `(longitude, latitude)`입니다.
+- 좌표 public surface는 `pykrtour.PlaceCoordinate`를 직접 사용합니다.
+- `PlaceCoordinate.as_tuple()`과 `PlaceCoordinate.as_geojson_position()`은 GeoJSON 표준인 `(longitude, latitude)`입니다.
+- UI나 사람이 읽는 순서는 `PlaceCoordinate.as_lat_lon()`으로 `(latitude, longitude)`를 명시합니다.
 - `Airport`, `Provider`, `Direction`은 모두 `StrEnum`이므로 문자열 비교와 JSON 직렬화가 가능합니다.
 - 타입 alias는 `pykrairport.types`에서 public API로 제공합니다.
 
@@ -227,7 +227,7 @@ client.iiac_raw_items("ShtbusInfo", "getShtbusInfo", {"pageNo": 1})
 - 공급자 원본 스키마를 그대로 흘리지 않음
 - 디버깅용 `raw: RawRecord`는 유지하되 기본값은 빈 mapping
 - provider/direction은 public 표면에서 `Provider`, `Direction` enum 사용
-- 좌표는 `Coordinate | None`으로 표준화
+- 좌표는 `pykrtour.PlaceCoordinate | None`으로 표준화
 - JSON 직렬화는 `model_dump(mode="json")`, `model_dump_json()`, `to_dict()`, `to_json()` 사용
 
 필수 모델:
@@ -241,7 +241,7 @@ ArrivalCongestion
 PassengerForecast
 AirportCode
 AirportMetadata
-Coordinate
+PlaceCoordinate
 KrairportModel
 ```
 
@@ -277,8 +277,9 @@ KrairportModel
 ### 5.4 좌표
 
 - 내부 표준: WGS84 decimal degrees
-- 사람/거리계산 순서: `(latitude, longitude)`
-- GeoJSON 순서: `(longitude, latitude)`
+- public 좌표 타입: `pykrtour.PlaceCoordinate`
+- 저장/거리계산/GeoJSON 순서: `(longitude, latitude)`
+- UI용 위도 우선 순서: `as_lat_lon()`의 `(latitude, longitude)`
 - DMS 문자열과 `N/E/S/W` hemisphere는 decimal degrees로 변환
 - 범위 밖 위도/경도는 `ValueError`
 
@@ -446,7 +447,7 @@ Live 테스트:
 6. `f_id`와 `flight_id`를 혼동하지 않습니다.
 7. 승객예고는 "예상치", 입국장 혼잡도는 "실시간성 현황"이라는 의미 차이를 유지합니다.
 8. 주차요금과 주차현황은 서로 다른 도메인 모델로 유지합니다.
-9. GeoJSON 좌표 순서를 일반 `(lat, lon)` 순서와 섞지 않습니다.
+9. `PlaceCoordinate`의 `(lon, lat)` 순서를 UI용 `(lat, lon)` 순서와 섞지 않습니다.
 10. enum을 추가해도 기존 문자열 비교/직렬화 호환성을 깨지 않습니다.
 
 ## 11. 문서 업데이트 규칙

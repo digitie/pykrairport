@@ -32,8 +32,9 @@ You are helping build and maintain `pykrairport`, a Python client that unifies K
 9. **Public enums remain string-compatible**:
    - use `StrEnum` so existing string comparisons and JSON serialization keep working
 10. **Coordinates are WGS84 decimal degrees**:
-   - expose `(latitude, longitude)` for human/geodesic use
-   - expose `(longitude, latitude)` only through GeoJSON-specific helpers
+   - use `pykrtour.PlaceCoordinate` directly in parameters and response models
+   - do not add a `pykrairport` coordinate wrapper/helper
+   - `as_tuple()` and `as_geojson_position()` are `(longitude, latitude)`; use `as_lat_lon()` for UI order
 11. **Public response models use Pydantic v2**:
    - inherit from `KrairportModel`
    - keep `ConfigDict(frozen=True, extra="forbid")`
@@ -94,7 +95,6 @@ pykrairport/
 │   ├── kac.py             # KacClient or adapter
 │   └── iiac.py            # IiacClient or adapter
 ├── airports.py            # bundled airport metadata and nearest lookup
-├── geo.py                 # WGS84 Coordinate and lat/lon parsing
 ├── models.py              # Pydantic response models
 ├── enums.py
 ├── types.py               # public type aliases
@@ -180,9 +180,9 @@ KAC and IIAC use different field names. Normalize them at the model boundary.
 - Do not use dataclass `asdict()` for public responses; use `model_dump(mode="json")`.
 - Keep `Provider`, `Direction`, `Airport`, `AirportType`, `ApiLanguage`, `ScheduleType` as `StrEnum`.
 - Keep public type aliases in `pykrairport.types`; wrappers should be able to import `AirportCodeLike`, `DirectionLike`, and `ProviderLike`.
-- Keep `Coordinate` as WGS84 decimal degrees.
-- `Coordinate.as_tuple()` returns `(latitude, longitude)`.
-- `Coordinate.as_geojson_position()` returns `(longitude, latitude)`.
+- Use `pykrtour.PlaceCoordinate` directly for WGS84 decimal degree coordinates.
+- `PlaceCoordinate.as_tuple()` returns `(longitude, latitude)`.
+- `PlaceCoordinate.as_lat_lon()` returns `(latitude, longitude)`.
 - Bundled airport metadata is convenience data for app maps/search, not aviation navigation data.
 
 ## Type conversion policy
@@ -358,7 +358,7 @@ Required offline tests:
 - Pydantic model validation, frozen behavior, and JSON-ready dumps
 - raw endpoint path validation
 - enum string compatibility
-- WGS84 coordinate parsing/range validation
+- `pykrtour.PlaceCoordinate` parsing/range validation
 - GeoJSON coordinate order
 - bundled airport metadata provider/active filtering
 - nearest airport lookup

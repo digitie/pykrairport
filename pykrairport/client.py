@@ -7,6 +7,8 @@ from collections.abc import Mapping
 from datetime import date
 from typing import Any
 
+from pykrtour import PlaceCoordinate
+
 from pykrairport._http import SessionLike
 from pykrairport._routing import provider_for_airport
 from pykrairport.airports import get_airport, list_airports, nearest_airport
@@ -475,15 +477,14 @@ class KrairportClient:
 
     def nearest_airport(
         self,
-        latitude: object,
-        longitude: object,
+        coordinate: PlaceCoordinate,
         *,
         provider: ProviderLike | None = None,
         active: bool | None = True,
     ) -> AirportMetadata | None:
-        """위경도 기준 가장 가까운 번들 공항 메타데이터를 반환합니다."""
+        """`PlaceCoordinate` 기준 가장 가까운 번들 공항 메타데이터를 반환합니다."""
 
-        return nearest_airport(latitude, longitude, provider=provider, active=active)
+        return nearest_airport(coordinate, provider=provider, active=active)
 
 
 def _date_to_yyyymmdd(value: str | date | None) -> str | None:

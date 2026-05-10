@@ -6,6 +6,8 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
+from pykrtour import PlaceCoordinate
+
 from pykrairport._convert import first_value, strip_or_none, to_bool_or_none, to_int_or_none
 from pykrairport._http import HttpClient, SessionLike
 from pykrairport._routing import ensure_kac_airport
@@ -14,7 +16,6 @@ from pykrairport._xml import extract_items
 from pykrairport.airports import get_airport_or_none
 from pykrairport.enums import Direction, Provider, normalize_direction
 from pykrairport.exceptions import KrairportParseError
-from pykrairport.geo import coordinate_from_mapping
 from pykrairport.models import (
     AircraftAssignment,
     AirportCode,
@@ -422,7 +423,7 @@ def _build_airport_code(row: Mapping[str, Any]) -> AirportCode:
         icao_code=metadata.icao_code if metadata else None,
         provider=metadata.provider if metadata else None,
         municipality=metadata.municipality if metadata else None,
-        coordinate=metadata.coordinate if metadata else coordinate_from_mapping(row),
+        coordinate=metadata.coordinate if metadata else PlaceCoordinate.from_mapping(row),
         raw=dict(row),
     )
 
@@ -491,7 +492,7 @@ def _build_airport_facility(
         location=strip_or_none(first_value(row, "loc", "location", "area")),
         business_hours=strip_or_none(first_value(row, "operTime", "businessHours")),
         telephone=strip_or_none(first_value(row, "tel", "telephone", "phone")),
-        coordinate=coordinate_from_mapping(row),
+        coordinate=PlaceCoordinate.from_mapping(row),
         raw=dict(row),
     )
 

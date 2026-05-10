@@ -2,7 +2,7 @@
 
 확인 기준일: 2026-05-06
 
-`pykrairport`는 외부 프로그램에서 안정적으로 사용할 수 있도록 문자열 API를 유지하면서 `StrEnum`, 타입 alias, WGS84 좌표 모델을 함께 제공합니다.
+`pykrairport`는 외부 프로그램에서 안정적으로 사용할 수 있도록 문자열 API를 유지하면서 `StrEnum`, 타입 alias, `pykrtour.PlaceCoordinate` 기반 WGS84 좌표 모델을 함께 제공합니다.
 
 ## Pydantic Models
 
@@ -84,26 +84,27 @@ def load_airport(code: AirportCodeLike) -> None:
 | `DirectionLike` | `str | Direction` |
 | `ProviderLike` | `str | Provider` |
 | `RawRecord` | provider raw 응답 mapping |
-| `CoordinateTuple` | `(latitude, longitude)` |
+| `CoordinateTuple` | `(longitude, latitude)` |
 | `GeoJsonPosition` | `(longitude, latitude)` |
 
-## Coordinate
+## PlaceCoordinate
 
-`Coordinate`는 WGS84 decimal degrees를 표준으로 사용합니다.
+좌표 public surface는 `pykrtour.PlaceCoordinate`를 직접 사용합니다. `pykrairport` 안에 별도 좌표 wrapper나 helper를 두지 않습니다.
 
 ```python
-from pykrairport import Coordinate
+from pykrairport import PlaceCoordinate
 
-coord = Coordinate.from_values("37° 33' 29.88\" N", "126° 47' 27.6\" E")
-coord.as_tuple()             # (latitude, longitude)
+coord = PlaceCoordinate.from_values("37° 33' 29.88\" N", "126° 47' 27.6\" E")
+coord.as_tuple()             # (longitude, latitude)
 coord.as_geojson_position()  # (longitude, latitude)
+coord.as_lat_lon()           # (latitude, longitude)
 ```
 
 규칙:
 
 - 내부 표준은 항상 WGS84 decimal degrees입니다.
-- 사람이 읽는 순서는 `(latitude, longitude)`입니다.
-- GeoJSON은 표준대로 `(longitude, latitude)`를 반환합니다.
+- 저장/geometry/GeoJSON 순서는 `(longitude, latitude)`입니다.
+- 사람이 읽는 UI나 일부 provider 요청에 `(latitude, longitude)`가 필요하면 `as_lat_lon()`을 사용합니다.
 - 위도는 `-90..90`, 경도는 `-180..180` 범위를 벗어나면 `ValueError`를 발생시킵니다.
 - DMS 문자열과 `N/E/S/W` hemisphere 표기를 decimal degrees로 변환합니다.
 
@@ -112,13 +113,13 @@ coord.as_geojson_position()  # (longitude, latitude)
 번들 공항 레지스트리는 외부 앱의 지도, 검색, 근접 공항 계산에 사용할 수 있습니다.
 
 ```python
-from pykrairport import get_airport, list_airports, nearest_airport
+from pykrairport import PlaceCoordinate, get_airport, list_airports, nearest_airport
 
 icn = get_airport("ICN")
 icn.coordinate.as_geojson_position()
 
 kac_active = list_airports(provider="kac", active=True)
-nearest = nearest_airport("37.56 N", "126.79 E")
+nearest = nearest_airport(PlaceCoordinate.from_values("37.56 N", "126.79 E"))
 ```
 
 `AirportMetadata` 필드:
@@ -130,7 +131,7 @@ nearest = nearest_airport("37.56 N", "126.79 E")
 | `name_english`, `name_korean` | 공항명 |
 | `icao_code` | ICAO 코드 |
 | `municipality` | 도시/지역 |
-| `coordinate` | `Coordinate | None` |
+| `coordinate` | `PlaceCoordinate | None` |
 | `timezone` | 기본 `Asia/Seoul` |
 | `airport_type` | `AirportType` |
 | `active` | 운영/비운영 메타데이터 |
@@ -144,4 +145,4 @@ nearest = nearest_airport("37.56 N", "126.79 E")
 주의:
 
 - 번들 좌표는 사용자 앱의 지도/검색 편의용입니다. 항공 운항, 관제, 항법 목적의 공식 원천으로 사용하지 마세요.
-- provider API가 좌표 필드를 직접 반환하는 경우 `Coordinate.from_mapping()` 또는 `coordinate_from_mapping()`으로 같은 표준 모델에 맞춥니다.
+- provider API가 좌표 필드를 직접 반환하는 경우 `PlaceCoordinate.from_mapping()`을 모델 생성 경계에서 바로 사용합니다.

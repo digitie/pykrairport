@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- 좌표 public surface를 `pykrtour.PlaceCoordinate` 직접 사용 방식으로 변경
+- `pykrairport.geo` 좌표 wrapper/helper 제거
+
 ## 0.1.0 - 2026-04-30
 
 - `README.md` 작성

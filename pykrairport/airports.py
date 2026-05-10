@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from types import MappingProxyType
 
+from pykrtour import PlaceCoordinate
+
 from pykrairport._convert import normalize_airport_code
 from pykrairport.enums import Airport, AirportType, Provider, normalize_provider
 from pykrairport.exceptions import UnsupportedAirportError
-from pykrairport.geo import Coordinate
 from pykrairport.models import AirportMetadata
 from pykrairport.types import ProviderLike
 
@@ -32,7 +33,7 @@ def _airport(
 ) -> AirportMetadata:
     coordinate = None
     if latitude is not None and longitude is not None:
-        coordinate = Coordinate(latitude, longitude)
+        coordinate = PlaceCoordinate(lon=longitude, lat=latitude)
     return AirportMetadata(
         code=code.value,
         provider=provider,
@@ -294,15 +295,13 @@ def list_airports(
 
 
 def nearest_airport(
-    latitude: object,
-    longitude: object,
+    coordinate: PlaceCoordinate,
     *,
     provider: ProviderLike | None = None,
     active: bool | None = True,
 ) -> AirportMetadata | None:
-    """WGS84 위경도 기준 가장 가까운 번들 공항을 반환합니다."""
+    """WGS84 `PlaceCoordinate` 기준 가장 가까운 번들 공항을 반환합니다."""
 
-    origin = Coordinate.from_values(latitude, longitude)
     candidates = [
         airport
         for airport in list_airports(provider=provider, active=active)
@@ -313,6 +312,6 @@ def nearest_airport(
 
     def distance_to_origin(airport: AirportMetadata) -> float:
         assert airport.coordinate is not None
-        return origin.distance_to_km(airport.coordinate)
+        return coordinate.distance_to_km(airport.coordinate)
 
     return min(candidates, key=distance_to_origin)

@@ -8,7 +8,7 @@ def test_public_exports() -> None:
     assert pykrairport.__version__ == "0.1.0"
     assert hasattr(pykrairport, "KrairportClient")
     assert hasattr(pykrairport, "Flight")
-    assert hasattr(pykrairport, "Coordinate")
+    assert hasattr(pykrairport, "PlaceCoordinate")
     assert hasattr(pykrairport, "AirportMetadata")
     assert hasattr(pykrairport, "get_airport")
 

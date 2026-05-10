@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+from pykrtour import PlaceCoordinate
 
 from pykrairport.airports import (
     KAC_AIRPORTS,
@@ -35,7 +36,8 @@ def test_airport_registry_filters_provider_and_active_status() -> None:
 
 
 def test_nearest_airport_uses_standardized_coordinates() -> None:
-    airport = nearest_airport("37.56 N", "126.79 E")
+    coordinate = PlaceCoordinate.from_values("37.56 N", "126.79 E")
+    airport = nearest_airport(coordinate)
 
     assert airport is not None
     assert airport.code == "GMP"

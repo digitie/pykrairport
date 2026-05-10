@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from datetime import date
 
+from pykrtour import PlaceCoordinate
+
 from pykrairport.client import KrairportClient
 from tests.conftest import FakeResponse, FakeSession
 
@@ -181,4 +183,5 @@ def test_unified_client_exposes_airport_metadata_helpers() -> None:
 
     assert client.airport_metadata("icn").provider == "iiac"
     assert client.airports(provider="kac", active=False)[0].code == "MPK"
-    assert client.nearest_airport("37.56", "126.79").code == "GMP"
+    coordinate = PlaceCoordinate.from_values("37.56", "126.79")
+    assert client.nearest_airport(coordinate).code == "GMP"

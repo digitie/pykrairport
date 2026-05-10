@@ -6,9 +6,9 @@ from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
+from pykrtour import PlaceCoordinate
 
 from pykrairport.enums import AirportType, Direction, Provider
-from pykrairport.geo import Coordinate
 from pykrairport.types import RawRecord
 
 
@@ -116,7 +116,7 @@ class AirportCode(KrairportModel):
     icao_code: str | None = None
     provider: Provider | None = None
     municipality: str | None = None
-    coordinate: Coordinate | None = None
+    coordinate: PlaceCoordinate | None = None
     raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
@@ -146,7 +146,7 @@ class AirportFacility(KrairportModel):
     location: str | None
     business_hours: str | None
     telephone: str | None
-    coordinate: Coordinate | None = None
+    coordinate: PlaceCoordinate | None = None
     raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
@@ -203,7 +203,7 @@ class ServiceDestination(KrairportModel):
     city_code: str | None
     city_name: str | None
     country_name: str | None
-    coordinate: Coordinate | None = None
+    coordinate: PlaceCoordinate | None = None
     raw: RawRecord = Field(default_factory=dict, repr=False)
 
 
@@ -216,7 +216,7 @@ class AirportMetadata(KrairportModel):
     municipality: str | None = None
     country_code: str = "KR"
     timezone: str = "Asia/Seoul"
-    coordinate: Coordinate | None = None
+    coordinate: PlaceCoordinate | None = None
     elevation_ft: int | None = None
     airport_type: AirportType = AirportType.UNKNOWN
     active: bool = True

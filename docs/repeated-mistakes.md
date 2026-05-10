@@ -75,8 +75,8 @@
 ## 13. 좌표 순서를 섞는 실수
 
 - 증상: 지도에서 공항이 바다나 다른 국가에 표시됨
-- 원인: 일반 좌표 `(latitude, longitude)`와 GeoJSON 좌표 `(longitude, latitude)` 순서를 혼동
-- 가드레일: `Coordinate.as_tuple()`과 `Coordinate.as_geojson_position()`을 분리하고 테스트로 고정
+- 원인: UI용 `(latitude, longitude)`와 저장/GeoJSON용 `(longitude, latitude)` 순서를 혼동
+- 가드레일: 좌표는 `pykrtour.PlaceCoordinate`를 직접 쓰고, `as_tuple()`/`as_geojson_position()`과 `as_lat_lon()`을 구분해 테스트로 고정
 
 ## 14. enum 도입으로 문자열 호환성을 깨는 실수
 

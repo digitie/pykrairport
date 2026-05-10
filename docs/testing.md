@@ -36,7 +36,7 @@
 - `PassengerForecast` 구간 값은 `int | None`
 - `Provider` / `Direction`은 `StrEnum`이지만 문자열 비교가 가능해야 함
 - public 응답 모델은 Pydantic `BaseModel`이며 frozen field validation과 `model_dump(mode="json")`를 검증
-- `Coordinate`는 WGS84 decimal degrees, GeoJSON 순서, DMS 파싱을 검증
+- `pykrtour.PlaceCoordinate`는 WGS84 decimal degrees, GeoJSON 순서, DMS 파싱을 검증
 - `AirportMetadata`는 provider/active 필터와 nearest airport 계산을 검증
 
 ## Live 테스트

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from pydantic import BaseModel, ValidationError
 
-from pykrairport import Coordinate, Flight, KrairportModel
+from pykrairport import Flight, KrairportModel, PlaceCoordinate
 
 
 def test_response_models_are_pydantic_models() -> None:
@@ -77,16 +77,18 @@ def test_response_models_are_frozen_and_validate_fields() -> None:
         )
 
 
-def test_coordinate_is_a_frozen_pydantic_model_with_positional_compatibility() -> None:
-    coordinate = Coordinate(37.5583, 126.791)
+def test_place_coordinate_is_a_frozen_pydantic_model() -> None:
+    coordinate = PlaceCoordinate(lon=126.791, lat=37.5583)
 
     assert isinstance(coordinate, BaseModel)
     assert coordinate.model_dump(mode="json") == {
-        "latitude": 37.5583,
-        "longitude": 126.791,
-        "datum": "WGS84",
+        "lon": 126.791,
+        "lat": 37.5583,
+        "altitude_m": None,
+        "accuracy_m": None,
+        "srid": 4326,
     }
     with pytest.raises(ValidationError):
-        coordinate.latitude = 1
+        coordinate.lat = 1
     with pytest.raises(ValidationError):
-        Coordinate(latitude=91, longitude=126)
+        PlaceCoordinate(lat=91, lon=126)

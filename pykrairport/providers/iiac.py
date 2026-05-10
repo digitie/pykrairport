@@ -6,6 +6,8 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
+from pykrtour import PlaceCoordinate
+
 from pykrairport._convert import (
     as_list,
     first_value,
@@ -19,7 +21,6 @@ from pykrairport._routing import ensure_iiac_airport
 from pykrairport._time import parse_kst_datetime
 from pykrairport.enums import Direction, Provider, normalize_direction
 from pykrairport.exceptions import KrairportParseError
-from pykrairport.geo import coordinate_from_mapping
 from pykrairport.models import (
     AirportFacility,
     ArrivalCongestion,
@@ -562,7 +563,7 @@ def _build_service_destination(row: Mapping[str, Any]) -> ServiceDestination:
         city_code=strip_or_none(first_value(row, "cityCode", "city_code")),
         city_name=strip_or_none(first_value(row, "city", "cityName", "cityNm")),
         country_name=strip_or_none(first_value(row, "country", "countryName", "countryNm")),
-        coordinate=coordinate_from_mapping(row),
+        coordinate=PlaceCoordinate.from_mapping(row),
         raw=dict(row),
     )
 
@@ -578,7 +579,7 @@ def _build_facility(row: Mapping[str, Any]) -> AirportFacility:
         location=strip_or_none(first_value(row, "location", "loc", "area")),
         business_hours=strip_or_none(first_value(row, "operTime", "businessHours", "hours")),
         telephone=strip_or_none(first_value(row, "tel", "telephone", "phone")),
-        coordinate=coordinate_from_mapping(row),
+        coordinate=PlaceCoordinate.from_mapping(row),
         raw=dict(row),
     )
 
