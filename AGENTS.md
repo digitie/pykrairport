@@ -26,6 +26,13 @@
 - 런타임 의존성은 `requests`, `pydantic`, Windows용 `tzdata`입니다.
 - 기본 테스트는 실제 KAC/IIAC 네트워크 호출 없이 동작해야 합니다.
 
+## 구현 방향
+
+- 불필요한 wrapper나 호환층을 새로 만들지 않습니다. 기존 public API 호환, provider 경계, 외부 wrapper용 type alias처럼 명확한 책임이 있을 때만 wrapper를 둡니다.
+- `pykma`, `pyopinet`, `pykex` 또는 가까운 유지보수 라이브러리에 이미 검증된 구현 패턴이 있으면, 작은 local patch로 우회하지 말고 그 구현 방향을 `pykrairport` 코드에 직접 적용합니다.
+- 최소 수정은 기본 작업 습관이지만, 검증된 구현을 따르는 것이 장기 유지보수와 일관성을 높이면 더 큰 변경도 허용합니다. 이때 변경 범위, 문서, 테스트를 함께 맞춥니다.
+- 다른 라이브러리 구현을 참고할 때도 provider-native 이름, 인증키, 응답 스키마를 그대로 public surface로 흘리지 않고 `pykrairport`의 모델/예외/라우팅 규칙에 맞춰 흡수합니다.
+
 ## 문서/경로 규칙
 
 - 문서의 파일 위치 정보는 항상 프로젝트 기준 상대 경로로 씁니다. 예: `pykrairport/client.py`, `docs/testing.md`.

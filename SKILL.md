@@ -46,6 +46,10 @@ You are helping build and maintain `pykrairport`, a Python client that unifies K
 14. **Windows 탐색은 PowerShell fallback 우선**:
    - if `rg` is blocked by execution permissions, use `Get-ChildItem` and `Select-String`
    - read/search Korean Markdown and Python docs with `-Encoding UTF8`
+15. **불필요한 wrapper보다 직접 적용 우선**:
+   - do not add a wrapper or compatibility layer unless it has a clear boundary responsibility
+   - when `pykma`, `pyopinet`, `pykex`, or another maintained library already has a proven implementation pattern, port that pattern directly into `pykrairport`
+   - minimal edits are preferred for ordinary fixes, but a larger direct adoption is acceptable when it improves long-term consistency and removes needless indirection
 
 ## Initial supported endpoints
 
@@ -390,6 +394,7 @@ Optional live tests:
 19. Reintroducing English Python docstrings or explanatory comments.
 20. Retrying blocked `rg` instead of using PowerShell file enumeration.
 21. Reading UTF-8 Korean docs through PowerShell without `-Encoding UTF8`.
+22. Adding a thin wrapper around an already proven implementation instead of adopting the implementation shape directly.
 
 When one of these is fixed, update `docs/repeated-mistakes.md`.
 

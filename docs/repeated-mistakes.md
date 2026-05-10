@@ -113,3 +113,9 @@
 - 증상: 한글 Markdown이나 Python docstring이 PowerShell 출력에서 깨져 보여 불필요한 수정이 발생
 - 원인: PowerShell 기본 출력/입력 인코딩이 UTF-8 문서와 맞지 않음
 - 가드레일: 문서와 Python 파일을 읽거나 검색할 때 `Get-Content -Encoding UTF8`, `Select-String -Encoding UTF8`을 사용
+
+## 20. 검증된 구현 위에 불필요한 wrapper를 덧대는 실수
+
+- 증상: `pykma`, `pyopinet`, `pykex` 등에서 이미 정리된 구현 패턴이 있는데도 `pykrairport`에 얇은 wrapper나 우회 레이어만 추가되어 코드 경로가 늘어남
+- 원인: "최소 수정"을 작은 diff로만 해석해 장기적으로 필요한 구조 정리를 미룸
+- 가드레일: 가까운 유지보수 라이브러리의 검증된 구현 방향이 있으면 불필요한 wrapper를 만들지 말고 `pykrairport`의 모델/예외/라우팅 규칙에 맞춰 직접 적용
