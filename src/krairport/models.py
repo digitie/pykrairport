@@ -5,8 +5,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
+from kraddr.base import Address, PlaceCoordinate
 from pydantic import BaseModel, ConfigDict, Field
-from pykrtour import Address, PlaceCoordinate
 
 from krairport.enums import AirportType, Direction, Provider
 from krairport.types import RawRecord

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from types import MappingProxyType
 
-from pykrtour import PlaceCoordinate
+from kraddr.base import PlaceCoordinate
 
 from krairport._convert import normalize_airport_code
 from krairport.enums import Airport, AirportType, Provider, normalize_provider

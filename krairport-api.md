@@ -201,7 +201,7 @@ def nearest_airport(
 정책:
 
 - 번들 좌표는 WGS84 decimal degrees를 표준으로 둡니다.
-- 좌표 public surface는 `pykrtour.PlaceCoordinate`를 직접 사용합니다.
+- 좌표 public surface는 `kraddr.base.PlaceCoordinate`를 직접 사용합니다.
 - `PlaceCoordinate.as_tuple()`과 `PlaceCoordinate.as_geojson_position()`은 GeoJSON 표준인 `(longitude, latitude)`입니다.
 - UI나 사람이 읽는 순서는 `PlaceCoordinate.as_lat_lon()`으로 `(latitude, longitude)`를 명시합니다.
 - `Airport`, `Provider`, `Direction`은 모두 `StrEnum`이므로 문자열 비교와 JSON 직렬화가 가능합니다.
@@ -227,8 +227,8 @@ client.iiac_raw_items("ShtbusInfo", "getShtbusInfo", {"pageNo": 1})
 - 공급자 원본 스키마를 그대로 흘리지 않음
 - 디버깅용 `raw: RawRecord`는 유지하되 기본값은 빈 mapping
 - provider/direction은 public 표면에서 `Provider`, `Direction` enum 사용
-- 좌표는 `pykrtour.PlaceCoordinate | None`으로 표준화
-- 주소는 `pykrtour.Address | None`으로 표준화하고 `Address.from_mapping()`을 직접 사용
+- 좌표는 `kraddr.base.PlaceCoordinate | None`으로 표준화
+- 주소는 `kraddr.base.Address | None`으로 표준화하고 `Address.from_mapping()`을 직접 사용
 - JSON 직렬화는 `model_dump(mode="json")`, `model_dump_json()`, `to_dict()`, `to_json()` 사용
 
 필수 모델:
@@ -279,7 +279,7 @@ KrairportModel
 ### 5.4 좌표
 
 - 내부 표준: WGS84 decimal degrees
-- public 좌표 타입: `pykrtour.PlaceCoordinate`
+- public 좌표 타입: `kraddr.base.PlaceCoordinate`
 - 저장/거리계산/GeoJSON 순서: `(longitude, latitude)`
 - UI용 위도 우선 순서: `as_lat_lon()`의 `(latitude, longitude)`
 - DMS 문자열과 `N/E/S/W` hemisphere는 decimal degrees로 변환
@@ -287,7 +287,7 @@ KrairportModel
 
 ### 5.5 주소
 
-- public 주소 타입: `pykrtour.Address`
+- public 주소 타입: `kraddr.base.Address`
 - provider row 주소 필드는 `Address.from_mapping()`으로 직접 변환
 - 공항 내부 위치 문자열은 주소로 추정하지 않고 `AirportFacility.location`에 유지
 - 자유 주소 문자열만으로 법정동코드를 임의 추정하지 않음

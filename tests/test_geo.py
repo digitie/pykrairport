@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from pykrtour import (
+from kraddr.base import (
     PlaceCoordinate,
     to_decimal_degrees,
     to_decimal_degrees_or_none,

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from pykrtour import PlaceCoordinate
+from kraddr.base import PlaceCoordinate
 
 from krairport.client import KrairportClient
 from tests.conftest import FakeResponse, FakeSession

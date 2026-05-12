@@ -2,7 +2,7 @@
 
 확인 기준일: 2026-05-06
 
-`krairport`는 외부 프로그램에서 안정적으로 사용할 수 있도록 문자열 API를 유지하면서 `StrEnum`, 타입 alias, `pykrtour.PlaceCoordinate`와 `pykrtour.Address` 기반 장소 타입을 함께 제공합니다.
+`krairport`는 외부 프로그램에서 안정적으로 사용할 수 있도록 문자열 API를 유지하면서 `StrEnum`, 타입 alias, `kraddr.base.PlaceCoordinate`와 `kraddr.base.Address` 기반 장소 타입을 함께 제공합니다.
 
 ## Pydantic Models
 
@@ -89,7 +89,7 @@ def load_airport(code: AirportCodeLike) -> None:
 
 ## PlaceCoordinate
 
-좌표 public surface는 `pykrtour.PlaceCoordinate`를 직접 사용합니다. `krairport` 안에 별도 좌표 wrapper나 helper를 두지 않습니다.
+좌표 public surface는 `kraddr.base.PlaceCoordinate`를 직접 사용합니다. `krairport` 안에 별도 좌표 wrapper나 helper를 두지 않습니다.
 
 ```python
 from krairport import PlaceCoordinate
@@ -149,7 +149,7 @@ nearest = nearest_airport(PlaceCoordinate.from_values("37.56 N", "126.79 E"))
 
 ## Address
 
-주소 public surface는 `pykrtour.Address`를 직접 사용합니다. `krairport` 안에 주소 wrapper나 helper를 두지 않습니다.
+주소 public surface는 `kraddr.base.Address`를 직접 사용합니다. `krairport` 안에 주소 wrapper나 helper를 두지 않습니다.
 
 ```python
 from krairport import Address

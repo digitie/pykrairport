@@ -3,9 +3,9 @@
 ## Unreleased
 
 - 배포/저장소 이름을 `python-krairport-api`, import 패키지 이름을 `krairport`로 정리하고 `src/krairport` 레이아웃으로 이동
-- 좌표 public surface를 `pykrtour.PlaceCoordinate` 직접 사용 방식으로 변경
+- 좌표 public surface를 `kraddr.base.PlaceCoordinate` 직접 사용 방식으로 변경
 - `krairport.geo` 좌표 wrapper/helper 제거
-- 시설 주소 public surface를 `pykrtour.Address` 직접 사용 방식으로 추가
+- 시설 주소 public surface를 `kraddr.base.Address` 직접 사용 방식으로 추가
 
 ## 0.1.0 - 2026-04-30
 

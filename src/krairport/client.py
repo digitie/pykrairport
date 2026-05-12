@@ -7,7 +7,7 @@ from collections.abc import Mapping
 from datetime import date
 from typing import Any
 
-from pykrtour import PlaceCoordinate
+from kraddr.base import PlaceCoordinate
 
 from krairport._http import SessionLike
 from krairport._routing import provider_for_airport

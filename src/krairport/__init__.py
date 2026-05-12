@@ -1,6 +1,6 @@
 """한국 공항 공공 API Python 클라이언트."""
 
-from pykrtour import Address, PlaceCoordinate
+from kraddr.base import Address, PlaceCoordinate
 
 from krairport.airports import (
     AIRPORTS,

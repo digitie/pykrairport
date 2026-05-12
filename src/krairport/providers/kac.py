@@ -6,7 +6,7 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
-from pykrtour import Address, PlaceCoordinate
+from kraddr.base import Address, PlaceCoordinate
 
 from krairport._convert import first_value, strip_or_none, to_bool_or_none, to_int_or_none
 from krairport._http import HttpClient, SessionLike

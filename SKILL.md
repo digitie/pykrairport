@@ -32,11 +32,11 @@ You are helping build and maintain `krairport`, a Python client that unifies Kor
 9. **Public enums remain string-compatible**:
    - use `StrEnum` so existing string comparisons and JSON serialization keep working
 10. **Coordinates are WGS84 decimal degrees**:
-   - use `pykrtour.PlaceCoordinate` directly in parameters and response models
+   - use `kraddr.base.PlaceCoordinate` directly in parameters and response models
    - do not add a `krairport` coordinate wrapper/helper
    - `as_tuple()` and `as_geojson_position()` are `(longitude, latitude)`; use `as_lat_lon()` for UI order
-11. **Addresses use pykrtour directly**:
-   - use `pykrtour.Address` directly in response models
+11. **Addresses use kraddr.base directly**:
+   - use `kraddr.base.Address` directly in response models
    - do not add a `krairport` address wrapper/helper
    - keep airport-internal location text separate from address DTOs
 12. **Public response models use Pydantic v2**:
@@ -184,10 +184,10 @@ KAC and IIAC use different field names. Normalize them at the model boundary.
 - Do not use dataclass `asdict()` for public responses; use `model_dump(mode="json")`.
 - Keep `Provider`, `Direction`, `Airport`, `AirportType`, `ApiLanguage`, `ScheduleType` as `StrEnum`.
 - Keep public type aliases in `krairport.types`; wrappers should be able to import `AirportCodeLike`, `DirectionLike`, and `ProviderLike`.
-- Use `pykrtour.PlaceCoordinate` directly for WGS84 decimal degree coordinates.
+- Use `kraddr.base.PlaceCoordinate` directly for WGS84 decimal degree coordinates.
 - `PlaceCoordinate.as_tuple()` returns `(longitude, latitude)`.
 - `PlaceCoordinate.as_lat_lon()` returns `(latitude, longitude)`.
-- Use `pykrtour.Address` directly for provider address fields.
+- Use `kraddr.base.Address` directly for provider address fields.
 - Keep interior terminal/floor/area text as `location`; do not guess it as an address.
 - Bundled airport metadata is convenience data for app maps/search, not aviation navigation data.
 
@@ -364,8 +364,8 @@ Required offline tests:
 - Pydantic model validation, frozen behavior, and JSON-ready dumps
 - raw endpoint path validation
 - enum string compatibility
-- `pykrtour.PlaceCoordinate` parsing/range validation
-- `pykrtour.Address` parsing and serialization in facility models
+- `kraddr.base.PlaceCoordinate` parsing/range validation
+- `kraddr.base.Address` parsing and serialization in facility models
 - GeoJSON coordinate order
 - bundled airport metadata provider/active filtering
 - nearest airport lookup
