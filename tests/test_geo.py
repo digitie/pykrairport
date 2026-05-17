@@ -9,11 +9,11 @@ from kraddr.base import (
 
 
 def test_place_coordinate_normalizes_decimal_and_geojson_order() -> None:
-    coordinate = PlaceCoordinate.from_values("126.450996", "37.469101")
+    coordinate = PlaceCoordinate.from_values("37.469101", "126.450996")
 
     assert coordinate.latitude == 37.469101
     assert coordinate.longitude == 126.450996
-    assert coordinate.as_tuple() == (126.450996, 37.469101)
+    assert coordinate.as_tuple() == (37.469101, 126.450996)
     assert coordinate.as_lat_lon() == (37.469101, 126.450996)
     assert coordinate.as_geojson_position() == (126.450996, 37.469101)
 
@@ -30,9 +30,9 @@ def test_coordinate_parses_dms_and_hemisphere() -> None:
 
 def test_coordinate_rejects_out_of_range_values() -> None:
     with pytest.raises(ValueError):
-        PlaceCoordinate.from_values("126", "91")
+        PlaceCoordinate.from_values("91", "126")
     with pytest.raises(ValueError):
-        PlaceCoordinate.from_values("181", "37")
+        PlaceCoordinate.from_values("37", "181")
     with pytest.raises(ValueError):
         to_decimal_degrees("-37 N", kind="latitude")
 
@@ -48,7 +48,7 @@ def test_coordinate_from_mapping_common_keys() -> None:
 
 
 def test_coordinate_distance() -> None:
-    gimpo = PlaceCoordinate.from_values(126.791, 37.5583)
-    incheon = PlaceCoordinate.from_values(126.450996, 37.469101)
+    gimpo = PlaceCoordinate.from_values(37.5583, 126.791)
+    incheon = PlaceCoordinate.from_values(37.469101, 126.450996)
 
     assert gimpo.distance_to_km(incheon) == pytest.approx(31.6, abs=1.0)

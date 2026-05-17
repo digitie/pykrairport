@@ -33,7 +33,7 @@ def _airport(
 ) -> AirportMetadata:
     coordinate = None
     if latitude is not None and longitude is not None:
-        coordinate = PlaceCoordinate(lon=longitude, lat=latitude)
+        coordinate = PlaceCoordinate(lat=latitude, lon=longitude)
     return AirportMetadata(
         code=code.value,
         provider=provider,

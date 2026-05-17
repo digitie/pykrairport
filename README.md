@@ -117,7 +117,7 @@ for plane in airport.aircraft_assignments(airport_code="CJU", sch_st_time="20260
 # 6) enum/type/좌표 메타데이터 활용
 icn = airport.airport_metadata(Airport.ICN)
 print(icn.coordinate.as_geojson_position())
-print(airport.nearest_airport(PlaceCoordinate.from_values("126.79 E", "37.56 N")).code)
+print(airport.nearest_airport(PlaceCoordinate.from_values("37.56 N", "126.79 E")).code)
 
 # direction도 문자열과 enum을 모두 받습니다.
 airport.flight_schedules(airport_code=Airport.ICN, direction=Direction.ARRIVAL)
@@ -268,7 +268,7 @@ class PassengerForecast(KrairportModel):
 | 숫자형 문자열 | `int` 또는 `float` | 의미가 count/요금이면 `int`, 비율/소수면 `float` |
 | 공항코드 `GMP`, `ICN` | `str` 또는 `Airport` | 항상 대문자 IATA 코드 보존 |
 | 공급자/방향 | `Provider`, `Direction` | `StrEnum`이라 문자열 비교/JSON 직렬화 가능 |
-| 위경도 | `kraddr.base.PlaceCoordinate` | WGS84 decimal degrees, 저장/GeoJSON `(lon, lat)`, UI용 `(lat, lon)`은 `as_lat_lon()` |
+| 위경도 | `kraddr.base.PlaceCoordinate` | WGS84 decimal degrees, public DTO `(lat, lon)`, GeoJSON은 `as_geojson_position()` |
 | 주소 | `kraddr.base.Address` | provider 주소 필드는 자유주소/지번/도로명 DTO로 보존, 내부 위치는 `location` |
 | 편명 `KE123`, `7C1101` | `str` | leading zero 가능성을 고려해 숫자형 변환 금지 |
 | 빈 문자열, 공백 | `None` | 공통 정규화 |
@@ -398,7 +398,7 @@ tests/
 - IIAC 공공데이터포털 서비스는 2026년에도 URL 변경 공지가 있었으므로, 새 API를 typed 모델로 올리기 전 `docs/api-coverage.md`와 변경 공지를 먼저 확인합니다.
 - 상세 운항 API는 KAC/IIAC 모두 `D-3 ~ D+6` 범위 문서가 많지만, 당일 운항 API는 `당일` 또는 `H-2 ~ H+2` 같은 더 좁은 범위를 사용합니다.
 - 일부 IIAC 응답 예시에는 `estimatedtime`, `scheduletime`이 일반 문자열이 아니라 과학적 표기처럼 보이는 예시가 있어 파서가 느슨해야 합니다.
-- 좌표는 `kraddr.base.PlaceCoordinate`를 직접 사용합니다. `as_tuple()`과 `as_geojson_position()`은 `(longitude, latitude)`이고, 사람/UI용 순서가 필요하면 `as_lat_lon()`을 사용합니다.
+- 좌표는 `kraddr.base.PlaceCoordinate`를 직접 사용합니다. `as_tuple()`과 `as_lat_lon()`은 `(latitude, longitude)`이고, GeoJSON 순서가 필요하면 `as_geojson_position()`을 사용합니다.
 - 문서의 파일 위치 정보는 `src/krairport/client.py`처럼 프로젝트 기준 상대 경로로 작성합니다.
 - Python 내부 문서(module/class/function docstring과 설명용 주석)는 한글로 작성합니다. provider 원문, 코드 식별자, URL은 원문을 유지합니다.
 - Windows 작업 환경에서 `rg`가 권한 문제로 막히면 PowerShell `Get-ChildItem` / `Select-String`으로 우회합니다.
